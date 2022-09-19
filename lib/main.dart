@@ -1,7 +1,105 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+late List<CameraDescription> _cameras;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  _cameras = await availableCameras();
+
   runApp(const MyApp());
+}
+
+class CameraApp extends StatefulWidget {
+  /// Default Constructor
+  const CameraApp({Key? key}) : super(key: key);
+
+  @override
+  State<CameraApp> createState() => _CameraAppState();
+}
+
+class _CameraAppState extends State<CameraApp> {
+  late CameraController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = CameraController(_cameras[1], ResolutionPreset.max);
+    controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    }).catchError((Object e) {
+      if (e is CameraException) {
+        switch (e.code) {
+          case 'CameraAccessDenied':
+            print('User denied camera access.');
+            break;
+          default:
+            print('Handle other errors.');
+            break;
+        }
+      }
+    });
+  }
+
+  Future<XFile?> takePicture() async {
+    final CameraController? cameraController = controller;
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      debugPrint('Error: select a camera first.');
+      return null;
+    }
+
+    if (cameraController.value.isTakingPicture) {
+      // A capture is already pending, do nothing.
+      return null;
+    }
+    print("!CAMERA!");
+    try {
+      final XFile file = await cameraController.takePicture();
+      print(file.path);
+      return file;
+    } on CameraException catch (e) {
+      _showCameraException(e);
+      return null;
+    }
+  }
+
+  void _showCameraException(CameraException e) {
+    debugPrint('Error: ${e.code}\n${e.description}');
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!controller.value.isInitialized) {
+      return Container();
+    }
+    return Column(
+      children: [
+        SizedBox(width: 250, child: CameraPreview(controller)),
+        Padding(
+            padding: EdgeInsets.all(15),
+            child: ElevatedButton(
+                onPressed: () {
+                  takePicture().then((XFile? file) {
+                    if (mounted) {
+                      if (file != null) {
+                        print('Picture saved to ${file.path}');
+                      }
+                    }
+                  });
+                },
+                child: Text("Сделать фото")))
+      ],
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -10,7 +108,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'VFC Register Panel',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -46,12 +144,14 @@ class _ContentPage extends State<MyHomePage> {
     } else if (_stage == 1) {
       return _langSelect();
     } else if (_stage == 2) {
-      return _yourName();
+      return _yourPhoto();
     } else if (_stage == 3) {
-      return _yourGender();
+      return _yourName();
     } else if (_stage == 4) {
-      return _yourContacts();
+      return _yourGender();
     } else if (_stage == 5) {
+      return _yourContacts();
+    } else if (_stage == 6) {
       return _yourPlayerNumber();
     } else {
       return _playerDone();
@@ -276,6 +376,40 @@ class _ContentPage extends State<MyHomePage> {
           )
         ],
       );
+
+  Widget _yourPhoto() {
+    return Scaffold(
+        body: Column(
+      children: [
+        _appBar(),
+        const Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Text(
+              "Давайте сделаем фото:",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            )),
+        Padding(
+            padding: EdgeInsets.all(80),
+            child: SizedBox(height: 300, child: CameraApp())),
+        Padding(
+          padding: const EdgeInsets.only(left: 240, top: 20),
+          child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _stage++;
+                });
+              },
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      const Color.fromARGB(255, 103, 22, 129))),
+              child: const Icon(
+                Icons.arrow_right_alt,
+                size: 50,
+              )),
+        )
+      ],
+    ));
+  }
 
   final TextEditingController _controllerPlayerName = TextEditingController();
   final TextEditingController _controllerPlayerLastName =
