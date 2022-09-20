@@ -1,5 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+
+import 'server_connector.dart';
 
 late List<CameraDescription> _cameras;
 
@@ -34,10 +37,10 @@ class _CameraAppState extends State<CameraApp> {
       if (e is CameraException) {
         switch (e.code) {
           case 'CameraAccessDenied':
-            print('User denied camera access.');
+            debugPrint('User denied camera access.');
             break;
           default:
-            print('Handle other errors.');
+            debugPrint('Handle other errors.');
             break;
         }
       }
@@ -45,8 +48,8 @@ class _CameraAppState extends State<CameraApp> {
   }
 
   Future<XFile?> takePicture() async {
-    final CameraController? cameraController = controller;
-    if (cameraController == null || !cameraController.value.isInitialized) {
+    final CameraController cameraController = controller;
+    if (!cameraController.value.isInitialized) {
       debugPrint('Error: select a camera first.');
       return null;
     }
@@ -55,10 +58,10 @@ class _CameraAppState extends State<CameraApp> {
       // A capture is already pending, do nothing.
       return null;
     }
-    print("!CAMERA!");
+    debugPrint("!CAMERA!");
     try {
       final XFile file = await cameraController.takePicture();
-      print(file.path);
+      debugPrint(file.path);
       return file;
     } on CameraException catch (e) {
       _showCameraException(e);
@@ -85,18 +88,18 @@ class _CameraAppState extends State<CameraApp> {
       children: [
         SizedBox(width: 250, child: CameraPreview(controller)),
         Padding(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             child: ElevatedButton(
                 onPressed: () {
                   takePicture().then((XFile? file) {
                     if (mounted) {
                       if (file != null) {
-                        print('Picture saved to ${file.path}');
+                        debugPrint('Picture saved to ${file.path}');
                       }
                     }
                   });
                 },
-                child: Text("Сделать фото")))
+                child: const Text("Сделать фото")))
       ],
     );
   }
@@ -121,6 +124,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
+  final ServerConnector serverConnector = const ServerConnector();
 
   @override
   State<MyHomePage> createState() => _ContentPage();
@@ -388,7 +392,7 @@ class _ContentPage extends State<MyHomePage> {
               "Давайте сделаем фото:",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             )),
-        Padding(
+        const Padding(
             padding: EdgeInsets.all(80),
             child: SizedBox(height: 300, child: CameraApp())),
         Padding(
@@ -414,54 +418,104 @@ class _ContentPage extends State<MyHomePage> {
   final TextEditingController _controllerPlayerName = TextEditingController();
   final TextEditingController _controllerPlayerLastName =
       TextEditingController();
-
+  bool dataInputed = false;
+  final _formNameKey = GlobalKey<FormState>();
   Widget _yourName() {
     return Scaffold(
-        body: Column(
-      children: [
-        _appBar(),
-        const Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Text(
-              "Пожалуйста, заполните ваши данные:",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            )),
-        Padding(
-            padding: const EdgeInsets.all(50),
-            child: TextField(
-              cursorColor: const Color.fromARGB(255, 103, 22, 129),
-              controller: _controllerPlayerName,
-              decoration: const InputDecoration(
-                hintText: 'Имя',
-              ),
-            )),
-        Padding(
-            padding: const EdgeInsets.only(left: 50, right: 50, bottom: 25),
-            child: TextField(
-              cursorColor: const Color.fromARGB(255, 103, 22, 129),
-              controller: _controllerPlayerLastName,
-              decoration: const InputDecoration(
-                hintText: 'Фамилия',
-              ),
-            )),
-        Padding(
-          padding: const EdgeInsets.only(left: 240, top: 20),
-          child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _stage++;
-                });
-              },
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
-                      const Color.fromARGB(255, 103, 22, 129))),
-              child: const Icon(
-                Icons.arrow_right_alt,
-                size: 50,
-              )),
-        )
-      ],
-    ));
+        body: Form(
+            key: _formNameKey,
+            child: Column(
+              children: [
+                _appBar(),
+                const Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Text(
+                      "Пожалуйста, заполните ваши данные:",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.all(50),
+                    child: TextFormField(
+                      // Имя
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Пожалуйста введите Ваше имя.';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        if (value.isNotEmpty &&
+                            _controllerPlayerLastName.value.text.isNotEmpty) {
+                          setState(() {
+                            dataInputed = true;
+                          });
+                        } else{
+                          setState(() {
+                            dataInputed = false;
+                          });
+                        }
+                      },
+                      cursorColor: const Color.fromARGB(255, 103, 22, 129),
+                      controller: _controllerPlayerName,
+                      decoration: const InputDecoration(
+                        hintText: 'Имя',
+                      ),
+                    )),
+                Padding(
+                    padding:
+                        const EdgeInsets.only(left: 50, right: 50, bottom: 25),
+                    child: TextFormField(
+                      // Фамилия
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Пожалуйста введите Вашу фамилию.';
+                        }
+                        return null;
+                      },
+                      onChanged: (value) {
+                        if (value.isNotEmpty &&
+                            _controllerPlayerName.value.text.isNotEmpty) {
+                          setState(() {
+                            dataInputed = true;
+                          });
+                        } else{
+                          setState(() {
+                            dataInputed = false;
+                          });
+                        }
+                      },
+                      cursorColor: const Color.fromARGB(255, 103, 22, 129),
+                      controller: _controllerPlayerLastName,
+                      decoration: const InputDecoration(
+                        hintText: 'Фамилия',
+                      ),
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(left: 240, top: 20),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        if (dataInputed) {
+                          if (_formNameKey.currentState!.validate()) {
+                            setState(() {
+                              _stage++;
+                            });
+                          }
+                        }else {
+                          null;
+                        }
+                      },
+                      style: ButtonStyle(
+                          backgroundColor: (dataInputed) ? MaterialStateProperty.all(
+                              const Color.fromARGB( 255, 103, 22, 129)): MaterialStateProperty.all(
+                              const Color.fromARGB( 150, 103, 22, 129))),
+                      child: const Icon(
+                        Icons.arrow_right_alt,
+                        size: 50,
+                      )),
+                )
+              ],
+            )));
   }
 
   var _playerGender = "";
@@ -548,58 +602,85 @@ class _ContentPage extends State<MyHomePage> {
 
   final TextEditingController _controllerPlayerEmail = TextEditingController();
   final TextEditingController _controllerPlayerPhone = TextEditingController();
-
+  final _formContactKey = GlobalKey<FormState>();
   Widget _yourContacts() {
+    RegExp regExp = RegExp(
+        "^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*\$");
     return Scaffold(
-        body: Column(
-      children: [
-        _appBar(),
-        const Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Text(
-              "Пожалуйста, укажите ваши контактные данные:",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            )),
-        Padding(
-            padding: const EdgeInsets.all(50),
-            child: TextField(
-              cursorColor: const Color.fromARGB(255, 103, 22, 129),
-              controller: _controllerPlayerEmail,
-              decoration: const InputDecoration(
-                hintText: 'E-mail',
-              ),
-            )),
-        Padding(
-            padding: const EdgeInsets.only(left: 50, right: 50, bottom: 25),
-            child: TextField(
-              cursorColor: const Color.fromARGB(255, 103, 22, 129),
-              controller: _controllerPlayerPhone,
-              decoration: const InputDecoration(
-                hintText: 'Номер Телефона',
-              ),
-            )),
-        Padding(
-          padding: const EdgeInsets.only(left: 240, top: 20),
-          child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _stage++;
-                });
-              },
-              style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
-                      const Color.fromARGB(255, 103, 22, 129))),
-              child: const Icon(
-                Icons.arrow_right_alt,
-                size: 50,
-              )),
-        )
-      ],
-    ));
+        body: Form(
+            key: _formContactKey,
+            child: Column(
+              children: [
+                _appBar(),
+                const Padding(
+                    padding: EdgeInsets.only(top: 20),
+                    child: Text(
+                      "Пожалуйста, укажите ваши контактные данные:",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )),
+                Padding(
+                    padding: const EdgeInsets.all(50),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Пожалуйста введите ваш E-mail!';
+                        }
+                        if (value != null && !value.contains(regExp)) {
+                          return "Некорректный почтовый адрес!";
+                        }
+                        return null;
+                      },
+                      cursorColor: const Color.fromARGB(255, 103, 22, 129),
+                      controller: _controllerPlayerEmail,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        hintText: 'E-mail',
+                      ),
+                    )),
+                Padding(
+                    padding:
+                        const EdgeInsets.only(left: 50, right: 50, bottom: 25),
+                    child: IntlPhoneField(
+                      initialCountryCode: 'KZ',
+                      validator: (value) {
+                        if (value == null) {
+                          return "Пожалуйста введи ваш номер телефона!";
+                        }
+
+                        return null;
+                      },
+                      cursorColor: const Color.fromARGB(255, 103, 22, 129),
+                      controller: _controllerPlayerPhone,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(
+                        hintText: 'Номер Телефона',
+                      ),
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(left: 240, top: 20),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _stage++;
+                        });
+                      },
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 103, 22, 129))),
+                      child: const Icon(
+                        Icons.arrow_right_alt,
+                        size: 50,
+                      )),
+                )
+              ],
+            )));
   }
 
-  final TextEditingController _controllerPlayerNumber = TextEditingController();
+  var playerNumber;
 
+  final TextEditingController _controllerPlayerNumber = TextEditingController();
+  bool success = true;
   Widget _yourPlayerNumber() {
     return Scaffold(
         body: Column(
@@ -608,7 +689,7 @@ class _ContentPage extends State<MyHomePage> {
         const Padding(
             padding: EdgeInsets.only(top: 20),
             child: Text(
-              "Пожалуйста, укажите ваши контактные данные:",
+              "Пожалуйста, укажите номер игрока:",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             )),
         Padding(
@@ -616,17 +697,42 @@ class _ContentPage extends State<MyHomePage> {
             child: TextField(
               cursorColor: const Color.fromARGB(255, 103, 22, 129),
               controller: _controllerPlayerNumber,
+              keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 hintText: 'Номер игрока',
               ),
             )),
+        if (!success)
+          const Text(
+            "Something went wrong",
+            style: TextStyle(color: Colors.red),
+          ),
         Padding(
           padding: const EdgeInsets.only(left: 240, top: 20),
           child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _stage++;
-                });
+              onPressed: () async {
+                playerNumber = await widget.serverConnector.getPlayerId();
+                if (playerNumber.runtimeType == String) {
+                  var response = await widget.serverConnector.postData(
+                      playerNumber,
+                      _controllerPlayerName.text,
+                      _controllerPlayerLastName.text,
+                      "photo",
+                      _controllerPlayerPhone.text,
+                      _controllerPlayerEmail.text,
+                      int.parse(_controllerPlayerNumber.text),
+                      _playerGender);
+                  if (response == 200) {
+                    setState(() {
+                      success = true;
+                      _stage++;
+                    });
+                  } else {
+                    setState(() {
+                      success = false;
+                    });
+                  }
+                }
               },
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(
@@ -641,7 +747,12 @@ class _ContentPage extends State<MyHomePage> {
   }
 
   Widget _playerDone() {
-    return Container();
+    return Container(
+      decoration: const BoxDecoration(),
+      child: Center(
+        child: Text(playerNumber.toString()),
+      ),
+    );
   }
 
   @override
