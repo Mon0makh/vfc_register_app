@@ -39,6 +39,7 @@ dependencies:
   camera: ^0.10.0+1
   http: ^0.13.5
   intl_phone_field: ^3.1.0
+  timer_count_down: ^2.2.1
 
 dev_dependencies:
   flutter_test:

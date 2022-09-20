@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:timer_count_down/timer_count_down.dart';
 
 import 'server_connector.dart';
 
@@ -95,6 +96,7 @@ class _CameraAppState extends State<CameraApp> {
                     if (mounted) {
                       if (file != null) {
                         debugPrint('Picture saved to ${file.path}');
+                        controller.pausePreview();
                       }
                     }
                   });
@@ -392,9 +394,13 @@ class _ContentPage extends State<MyHomePage> {
               "Давайте сделаем фото:",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             )),
-        const Padding(
+        Padding(
             padding: EdgeInsets.all(80),
-            child: SizedBox(height: 300, child: CameraApp())),
+            child: SizedBox(
+                height: 300,
+                child: Row(children: [
+                  CameraApp(),
+                ]))),
         Padding(
           padding: const EdgeInsets.only(left: 240, top: 20),
           child: ElevatedButton(
@@ -450,7 +456,7 @@ class _ContentPage extends State<MyHomePage> {
                           setState(() {
                             dataInputed = true;
                           });
-                        } else{
+                        } else {
                           setState(() {
                             dataInputed = false;
                           });
@@ -479,7 +485,7 @@ class _ContentPage extends State<MyHomePage> {
                           setState(() {
                             dataInputed = true;
                           });
-                        } else{
+                        } else {
                           setState(() {
                             dataInputed = false;
                           });
@@ -501,14 +507,16 @@ class _ContentPage extends State<MyHomePage> {
                               _stage++;
                             });
                           }
-                        }else {
+                        } else {
                           null;
                         }
                       },
                       style: ButtonStyle(
-                          backgroundColor: (dataInputed) ? MaterialStateProperty.all(
-                              const Color.fromARGB( 255, 103, 22, 129)): MaterialStateProperty.all(
-                              const Color.fromARGB( 150, 103, 22, 129))),
+                          backgroundColor: (dataInputed)
+                              ? MaterialStateProperty.all(
+                                  const Color.fromARGB(255, 103, 22, 129))
+                              : MaterialStateProperty.all(
+                                  const Color.fromARGB(100, 103, 22, 129))),
                       child: const Icon(
                         Icons.arrow_right_alt,
                         size: 50,
@@ -590,7 +598,7 @@ class _ContentPage extends State<MyHomePage> {
               },
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Color.fromARGB(
-                      (_playerGender != "") ? 255 : 150, 103, 22, 129))),
+                      (_playerGender != "") ? 255 : 100, 103, 22, 129))),
               child: const Icon(
                 Icons.arrow_right_alt,
                 size: 50,
@@ -603,6 +611,7 @@ class _ContentPage extends State<MyHomePage> {
   final TextEditingController _controllerPlayerEmail = TextEditingController();
   final TextEditingController _controllerPlayerPhone = TextEditingController();
   final _formContactKey = GlobalKey<FormState>();
+  bool contactDataInputted = false;
   Widget _yourContacts() {
     RegExp regExp = RegExp(
         "^[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9]+)*\$");
@@ -626,10 +635,22 @@ class _ContentPage extends State<MyHomePage> {
                         if (value == null || value.isEmpty) {
                           return 'Пожалуйста введите ваш E-mail!';
                         }
-                        if (value != null && !value.contains(regExp)) {
+                        if (!value.contains(regExp)) {
                           return "Некорректный почтовый адрес!";
                         }
                         return null;
+                      },
+                      onChanged: (value) {
+                        if (value.isNotEmpty &&
+                            _controllerPlayerPhone.value.text.isNotEmpty) {
+                          setState(() {
+                            contactDataInputted = true;
+                          });
+                        } else {
+                          setState(() {
+                            contactDataInputted = false;
+                          });
+                        }
                       },
                       cursorColor: const Color.fromARGB(255, 103, 22, 129),
                       controller: _controllerPlayerEmail,
@@ -641,14 +662,25 @@ class _ContentPage extends State<MyHomePage> {
                 Padding(
                     padding:
                         const EdgeInsets.only(left: 50, right: 50, bottom: 25),
-                    child: IntlPhoneField(
-                      initialCountryCode: 'KZ',
+                    child: TextFormField(
                       validator: (value) {
                         if (value == null) {
                           return "Пожалуйста введи ваш номер телефона!";
                         }
 
                         return null;
+                      },
+                      onChanged: (value) {
+                        if (value.isNotEmpty &&
+                            _controllerPlayerEmail.value.text.isNotEmpty) {
+                          setState(() {
+                            contactDataInputted = true;
+                          });
+                        } else {
+                          setState(() {
+                            contactDataInputted = false;
+                          });
+                        }
                       },
                       cursorColor: const Color.fromARGB(255, 103, 22, 129),
                       controller: _controllerPlayerPhone,
@@ -661,13 +693,21 @@ class _ContentPage extends State<MyHomePage> {
                   padding: const EdgeInsets.only(left: 240, top: 20),
                   child: ElevatedButton(
                       onPressed: () {
-                        setState(() {
-                          _stage++;
-                        });
+                        if (dataInputed) {
+                          if (_formContactKey.currentState!.validate()) {
+                            setState(() {
+                              _stage++;
+                            });
+                          }
+                        } else {
+                          null;
+                        }
                       },
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 103, 22, 129))),
+                              contactDataInputted
+                                  ? const Color.fromARGB(255, 103, 22, 129)
+                                  : const Color.fromARGB(100, 103, 22, 129))),
                       child: const Icon(
                         Icons.arrow_right_alt,
                         size: 50,
@@ -695,6 +735,7 @@ class _ContentPage extends State<MyHomePage> {
         Padding(
             padding: const EdgeInsets.all(50),
             child: TextField(
+              maxLength: 2,
               cursorColor: const Color.fromARGB(255, 103, 22, 129),
               controller: _controllerPlayerNumber,
               keyboardType: TextInputType.number,
@@ -739,7 +780,7 @@ class _ContentPage extends State<MyHomePage> {
                       const Color.fromARGB(255, 103, 22, 129))),
               child: const Icon(
                 Icons.arrow_right_alt,
-                size: 50,
+                size: 40,
               )),
         )
       ],
@@ -747,12 +788,21 @@ class _ContentPage extends State<MyHomePage> {
   }
 
   Widget _playerDone() {
-    return Container(
-      decoration: const BoxDecoration(),
-      child: Center(
-        child: Text(playerNumber.toString()),
+    return Scaffold(
+        body: Column(children: [
+      _appBar(),
+      Center(
+        child: Padding(
+            padding: EdgeInsets.all(50),
+            child: Text(
+              "Ваш ID:${playerNumber.toString()}",
+              style: const TextStyle(
+                  color: Colors.black,
+                  decoration: TextDecoration.none,
+                  fontSize: 50),
+            )),
       ),
-    );
+    ]));
   }
 
   @override
