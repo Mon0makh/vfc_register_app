@@ -63,9 +63,9 @@ const GET_YOUR_GENDER = {"RUS": "Укажите ваш пол:",
 
 const MALE = {"RUS": "М", "ENG": "M", "KAZ": "М"};
 const FEMALE = {"RUS": "Ж", "ENG": "F", "KAZ": "Ж"};
-const ENTER_YOUR_HEIGHT = {"RUS": "Укажите ваш рост",
-                           "ENG": "Enter your height",
-                           "KAZ":"Бойыңызды енгізіңіз"};
+const ENTER_YOUR_HEIGHT = {"RUS": "Укажите ваш рост (см)",
+                           "ENG": "Enter your height (cm)",
+                           "KAZ":"Бойыңызды енгізіңіз (см)"};
 
 const SELECT_PLAYER_NUMBER = {"RUS": "Выберите под каким номером вы будете играть:",
                               "ENG": "Choose which number you will play under:",
@@ -74,3 +74,19 @@ const SELECT_PLAYER_NUMBER = {"RUS": "Выберите под каким ном�
 const DATA_NOT_UNIQUE = {"RUS": "Вы уже зарегестиррованы! Ваш ID ",
                          "ENG": "You are already registered! Your ID ",
                          "KAZ": "Сіз әлдеқашан тіркелгенсіз! Сіздің жеке куәлігіңіз "};
+
+const REQUIRED_FILED = {"RUS": "Обязательное поле",
+                        "ENG": "Required field",
+                        "KAZ": "Міндетті өріс"};
+
+const ARE_U_SO_HIGHT = {"RUS": "Вы настолько высокий?",
+                        "ENG": "Are you that tall?",
+                        "KAZ": "Сіз сондай ұзынсыз ба?"};
+
+const TAKE_ID_TO_OPERATOR = {"RUS": "*Сообщите код оператору",
+                              "ENG": "*Give the code to the operator",
+                              "KAZ": "*Операторға кодты беріңіз"};
+
+const PLAYER_REGISTERED = {"RUS": "Вы уже зарегистиррованы! Можете пройти регистрацию ещё раз завтра.",
+                           "ENG": "You are already registered! You can register again tomorrow.",
+                           "KAZ": "Сіз әлдеқашан тіркелгенсіз! Ертең қайта тіркеле аласыз."};

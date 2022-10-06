@@ -287,6 +287,7 @@ class _ContentPage extends State<MyHomePage> {
   final TextEditingController _controllerPlayerLastName =
   TextEditingController();
   final TextEditingController _controllerPlayerEmail = TextEditingController();
+  final TextEditingController _controllerPlayerPhoneNumber = TextEditingController();
   String _playerPhone = "";
   final _formContactKey = GlobalKey<FormState>();
   bool contactDataInputted = false;
@@ -428,7 +429,7 @@ class _ContentPage extends State<MyHomePage> {
                       keyboardType: TextInputType.emailAddress,
                       cursorColor: Colors.white,
                       style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
+                      decoration : const InputDecoration(
                         hintText: 'E-mail',
                         fillColor: Colors.white,
                         hoverColor: Colors.white,
@@ -439,16 +440,17 @@ class _ContentPage extends State<MyHomePage> {
 
                 Padding(
                     padding:
-                    EdgeInsets.only(left: 50, right: 50, bottom: 25),
+                    const EdgeInsets.only(left: 50, right: 50, bottom: 25),
                     child:
                     IntlPhoneField(
                       decoration: InputDecoration(hintText: PHONE_NUMBER[_lang],
                                       hintStyle: TextStyle(color: Color.fromARGB(100, 255, 255, 255))),
                       invalidNumberMessage: INCORRECT_PHONE_NUMBER[_lang],
+                      controller: _controllerPlayerPhoneNumber,
                       initialCountryCode: 'KZ',
-                      style: TextStyle(color: Colors.white),
-                      dropdownTextStyle: TextStyle(color: Color.fromARGB(150, 255, 255, 255), fontSize: 15),
-                      flagsButtonPadding: EdgeInsets.only(bottom: 5, right: 10),
+                      style: const TextStyle(color: Colors.white),
+                      dropdownTextStyle: const TextStyle(color: Color.fromARGB(150, 255, 255, 255), fontSize: 15),
+                      flagsButtonPadding: const EdgeInsets.only(bottom: 5, right: 10),
                       onChanged: (phone) {
 
                         _playerPhone = phone.completeNumber;
@@ -469,13 +471,13 @@ class _ContentPage extends State<MyHomePage> {
                     ),                    // TextFormField(
 
                 ),
-                Padding(padding: EdgeInsets.all(45), child: Row(children: [
+                Padding(padding: const EdgeInsets.all(45), child: Row(children: [
                   Checkbox( value: acceptConf,
                             onChanged: (value){
                                     setState((){ acceptConf = value;});
                             }
                   ),
-                  Text(I_ACCEPT_WITH[_lang]!, style: TextStyle(color: Colors.white)),
+                  Text(I_ACCEPT_WITH[_lang]!, style: const TextStyle(color: Colors.white)),
                   TextButton(onPressed: () {
                     showDialog(
                       context: context,
@@ -484,7 +486,7 @@ class _ContentPage extends State<MyHomePage> {
                           child: SimpleDialog(
                             title: Text(PERSONAL_DATA_RULES[_lang]!),
                             children: [
-                              Padding(padding: EdgeInsets.all(15),
+                              const Padding(padding: EdgeInsets.all(15),
                                       child: Text('1. Условия обработки персональных данных (Далее – Условия) регулируют правоотношения по обработке персональных данных между компанией ООО «______», ОГРН _______, адрес: _______________ (далее - Рекламораспространитель) и Клиентом (дееспособное физическое лицо, достигшее 18-летнего возраста и желающее получать рекламно-информационные рассылки по электронной почте). Под персональными данными понимается любая информация, относящаяся к прямо или косвенно определенному или определяемому физическому лицу (гражданину). Под обработкой персональных данных понимается любое действие (операция) или совокупность действий (операций) с персональными данным, совершаемых с использованием средств автоматизации или без использования таких средств. К таким действиям (операциям) можно отнести: сбор, получение, запись, систематизацию, накопление, хранение, уточнение (обновление, изменение), извлечение, использование, передачу (распространение, предоставление, доступ), обезличивание, блокирование, удаление, уничтожение персональных данных.2. Клиент соглашается с настоящими Условиями путем ввода принадлежащего ему адреса электронной почты в специальное поле на сайте Рекламодателя с предложением подписаться на рассылку, и последующего нажатия кнопки «Подписаться» «Подписаться на рассылку», «Зарегистрироваться», другое перечислить). Совершая указанные действия, Клиент направляет принадлежащий ему адрес электронной почты Рекламораспространителю в целях дальнейшего осуществления рекламно-информационных рассылок по электронной почте.3. При подписке на рекламно-информационные рассылки Клиент предоставляет Рекламораспространителю следующую информацию: Фамилия, Имя, адрес электронной почты, номер контактного телефона .4. Предоставляя свои персональные данные Клиент соглашается на их обработку (вплоть до отзыва Клиента своего согласия на обработку персональных данных) компанией ООО «______», ОГРН _______, адрес: _______________ в целях предоставления Клиенту рекламной и справочной информации и в иных целях согласно п.4 Условий. При обработке персональных данных Рекламораспространитель руководствуется Федеральным законом «О персональных данных», Федеральным законом «О рекламе» и локальными нормативными документами.3. Если Клиент желает уточнения персональных данных в случае, когда персональные данные являются неполными, неточными или неактуальными, либо желает отозвать свое согласие на обработку персональных данных, Клиент должен направить официальный запрос Рекламораспространителю в следующем порядк: письмо с темой «Уточнить персональные данные» или «Прекратить обработку персональных данных» на адрес электронной почты example@email.ru. В письме необходимо указать электронный адрес и соответствующее требование.При отзыве согласия на обработку персональных данных Клиент также отказывается от получения рекламно-информационных рассылок.4. Рекламораспространитель использует предоставленные Клиентом данные в целях:4.1. Отправки сообщений рекламно-информационного характера;4.2. для осуществления деятельности по продвижению товаров и услуг;4.3. оценки и анализа работы системы Рекламораспространителя;4.4. определения победителя в акциях, проводимых Рекламодателями (третьи лица, состоящие в договорных отношениях с Рекламораспространителем, чьи товары и услуги рекламируются в рассылках);4.5. анализа покупательских особенностей Клиента и предоставления персональных рекомендаций;4.6. информирования клиента об акциях, скидках и специальных предложениях Рекламодателей посредством рассылок по электронной почте.5. Рекламораспространитель обязуется не передавать полученную от Клиента информацию третьим лицам. Не считается нарушением предоставление Рекламораспространителя информации агентам и третьим лицам, действующим на основании договора с Рекламораспространителем, для исполнения обязательств перед Клиентом и только в рамках договоров. Не считается нарушением настоящего пункта передача Рекламораспространителем третьим лицам данных о Клиенте в обезличенной форме в целях оценки и анализа работы системы Рекламораспространителя, анализа покупательских особенностей Клиента и предоставления персональных рекомендаций.6. Не считается нарушением обязательств передача информации в соответствии с обоснованными и применимыми требованиями законодательства Российской Федерации.7. Рекламораспространитель вправе использовать технологию «cookies». «Cookies» не содержат конфиденциальную информацию и не передаются третьим лицам.8. Рекламораспространитель получает информацию об ip-адресе Клиента и сведения о том, по ссылке с какого интернет-сайта он пришел. Данная информация не используется для установления личности посетителя.9. Рекламораспространитель при обработке персональных данных принимает необходимые и достаточные организационные и технические меры для защиты персональных данных от неправомерного доступа к ним, а также от иных неправомерных действий в отношении персональных данных.Текст для письма-подтвержденияПереходя по ссылке, Вы, дееспособное физическое лицо, достигшее 18-летнего возраста и желающее получать рекламно-информационные рассылки по электронной почте (далее – Клиент), соглашаетесь со следующими условиями направления рекламно-информационных сообщений:1. С момента перехода по ссылке в сервисном сообщении, направленном на адрес электронной почты Клиента, ООО «______», ОГРН _______, адрес: _______________ (далее - Рекламораспространитель) вправе направлять Клиенту на указанный адрес электронной почты рекламно-информационные сообщения. При направлении рекламно-информационных сообщений Рекламораспространитель руководствуется Федеральным законом "О рекламе" и иными законодательными актами Российской Федерации.2. Если Клиент не желает получать сообщения рекламно-информационного характера от Рекламораспространителя, он должен перейти по соответствующей ссылке, размещаемой в каждом рекламно-информационном сообщении, и после перехода на интернет-страницу подтвердить отказ от рассылки путем нажатия соответствующей кнопки. С момента направления запроса получение рассылок Рекламораспространителя возможно в течение 10 календарных дней] , что обусловлено особенностями работы и взаимодействия информационных систем Рекламораспространителя.3. При направлении Клиенту рекламно-информационных сообщений Рекламораспространитель осуществляет обработку персональных данных клиента согласно Условиям обработки персональных данных .  '))],
 
                           ),
@@ -552,7 +554,7 @@ class _ContentPage extends State<MyHomePage> {
                       child: Icon(
                         Icons.chevron_right_rounded,
                         size: 120,
-                        color: dataInputed ? Colors.white : const Color.fromARGB(100, 1, 1, 1),
+                        color: dataInputed && acceptConf! ? Colors.white : const Color.fromARGB(100, 1, 1, 1),
                         )
                   ),
                 )])
@@ -663,7 +665,7 @@ class _ContentPage extends State<MyHomePage> {
                       return Container();
                     }
                     return Text(
-                        '${time?.sec}', style: const TextStyle(fontSize: 300, color: Colors.white));
+                        '${time?.sec}', style: const TextStyle(fontSize: 300, color: Color.fromARGB(150, 255, 255, 255)));
                   },
                 ) : Container(),)
               ])),
@@ -730,17 +732,19 @@ class _ContentPage extends State<MyHomePage> {
           const SizedBox(width: 298),
           TextButton(
               onPressed: () async {
-                if (photoStage == 0) return;
+                if (photoStage == 2){
+                  setState(() {
+                    _stage++;
+                  });
+                  photoPath = await widget.serverConnector.sendImage(photoPath);
+                } return;
                 //print("CAMERA - $photoPath");
-                setState(() {
-                  _stage++;
-                });
-                photoPath = await widget.serverConnector.sendImage(photoPath);
+
               },
               child: Icon(
                 Icons.chevron_right_rounded,
                 size: 120,
-                color: photoStage == 0 ? Color.fromARGB(100, 1, 1, 1): Colors.white,
+                color: photoStage == 2 ? Colors.white : const Color.fromARGB(100, 1, 1, 1),
               )),
 
         ],)
@@ -749,7 +753,7 @@ class _ContentPage extends State<MyHomePage> {
   }
 
   var _playerGender = "";
-
+  final _formPlayerHeightKey = GlobalKey<FormState>();
   Widget _yourGender() {
     return Scaffold(
         body: Container(
@@ -776,7 +780,7 @@ class _ContentPage extends State<MyHomePage> {
             padding: EdgeInsets.only(top: 20),
             child: Center(child: Text(
               GET_YOUR_GENDER[_lang]!,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
             ))),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -828,21 +832,30 @@ class _ContentPage extends State<MyHomePage> {
             )
           ],
         ),
-            Padding(padding: EdgeInsets.all(100),
-                child: TextField(
+            Padding(padding: const EdgeInsets.all(100),
+                child: Form(key: _formPlayerHeightKey,
+                    child: TextFormField(
               maxLength: 3,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return REQUIRED_FILED[_lang];
+                } else if (int.parse(value) > 300) {
+                  return ARE_U_SO_HIGHT[_lang];
+                }
+                return null;
+              },
               controller: _controllerPlayerHeight,
               keyboardType: TextInputType.number,
               cursorColor: Colors.white,
-              style: TextStyle(color: Colors.white, fontSize: 40),
+              style: const TextStyle(color: Colors.white, fontSize: 40),
               decoration: InputDecoration(
                 hintText: ENTER_YOUR_HEIGHT[_lang],
                 fillColor: Colors.white,
                 hoverColor: Colors.white,
-                hintStyle: TextStyle(color: Color.fromARGB(100, 255, 255, 255)),
+                hintStyle: const TextStyle(color: Color.fromARGB(100, 255, 255, 255)),
                 focusColor: Colors.white,
               ),
-            )),
+            ))),
         Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -865,7 +878,9 @@ class _ContentPage extends State<MyHomePage> {
                 padding: const EdgeInsets.only(top: 60),
                 child: TextButton(
                     onPressed: () {
-                      if (_playerGender != "" && _controllerPlayerHeight.value.text.isNotEmpty) {
+                      if (_playerGender != "" &&
+                          _controllerPlayerHeight.value.text.isNotEmpty &&
+                          _formPlayerHeightKey.currentState!.validate()) {
                         // TODO Height validation
                           setState(() {
                             _stage++;
@@ -878,7 +893,10 @@ class _ContentPage extends State<MyHomePage> {
                     child: Icon(
                       Icons.chevron_right_rounded,
                       size: 120,
-                      color: _playerGender != "" && _controllerPlayerHeight.value.text.isNotEmpty ? Colors.white : const Color.fromARGB(100, 1, 1, 1),
+                      color: (_playerGender != "" &&
+                          _controllerPlayerHeight.value.text.isNotEmpty) ?
+                              Colors.white :
+                              const Color.fromARGB(100, 1, 1, 1),
                     )
                 ),
               )])
@@ -908,10 +926,10 @@ class _ContentPage extends State<MyHomePage> {
       children: [
         _appBar(),
         Padding(
-            padding: EdgeInsets.only(top: 20),
+            padding: const EdgeInsets.only(top: 20),
             child: Center(child: Text(
               SELECT_PLAYER_NUMBER[_lang]!,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
             ))),
         Padding(
             padding: const EdgeInsets.only(top: 30, left: 40, right: 40),
@@ -1007,6 +1025,8 @@ class _ContentPage extends State<MyHomePage> {
     _controllerPlayerLastName.clear();
     _controllerPlayerName.clear();
     _controllerPlayerEmail.clear();
+    _controllerPlayerPhoneNumber.clear();
+    controller.resumePreview();
     _playerPhone = "";
     photoStage = 0;
     playerNumber = 0;
@@ -1028,7 +1048,7 @@ class _ContentPage extends State<MyHomePage> {
             child: ListView(children: [
       _appBar(),
       Padding(
-        padding: EdgeInsets.all(100),
+        padding: EdgeInsets.all(20),
         child:
         FutureBuilder<Widget>(
           future: _sendData(),
@@ -1036,74 +1056,124 @@ class _ContentPage extends State<MyHomePage> {
             if (!snapshot.hasData) {
               return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
+
               // This shouldn't happen in our case, but good to handle errors.
               return const Text('Error has happened in the future!');
             } else {
-              return Column(children: [
-                      SizedBox(height: 742, width: 210, child: Container(color: Colors.white,
+              return playerID == "DNQ" ?
+                  Center(child:
+                            Text(PLAYER_REGISTERED[_lang]!, style:
+                            const TextStyle(fontSize: 70, color: Colors.white))) :
+
+                  Column(children: [
+                      SizedBox(height: 600, width: 400, child: Container(
+                          decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 15, color: Colors.white), borderRadius: BorderRadius.circular(20)),
+
                       child: Column(
                         children: [
                           Center(child: Image.asset(
-                      'img/visalogo.png',
-                       height: 15)),
-                          SizedBox(height: 3),
+                      'img/visalogo_alt.png',
+                       height: 60)),
                           Center(
-                              child: Row(children: [
-                                SizedBox(width: 1),
+                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                                const SizedBox(width: 10),
                                 Column(children: [
-                                  Text("Score: ", style: const TextStyle(fontSize: 18)),
-                                  Text("89",
+                                  const Text("0",
+                                      style: TextStyle(
+                                          color: Color.fromARGB(255, 0, 0, 245),
+                                          fontSize: 140,
+                                          fontWeight: FontWeight.w700,
+                                          fontFamily: 'VisaDialectHigh')),
+                                  Text("$playerNumber",
                                       style: const TextStyle(
-                                          color: Colors.blue, fontSize: 80)),
-                                  Text("7",
-                                      style: const TextStyle(
-                                          color: Colors.blue, fontSize: 100))
+                                          color: Color.fromARGB(255, 0, 0, 0),
+                                          fontSize: 70,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: 'VisaDialectHigh'))
                                 ]),
-                                Image.network('http://185.146.3.41/VFC-backend/$photoPath', height: 27)
-                              ], mainAxisAlignment: MainAxisAlignment.spaceAround)),
-                          Text("Jonh Doe",
-                              style: TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold)),
-                          Divider(
-                              color: Colors.blue, height: 20, thickness: 2),
-                          Row(children: [
-                            Text("Jump: ", style: const TextStyle(fontSize: 20)),
-                            Text("240",
-                                style: const TextStyle(
-                                    fontSize: 15, color: Colors.blue))
-                          ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
-                          Row(children: [
-                            Text("Dribbling:   ", style: const TextStyle(fontSize: 20)),
-                            Text("00:13",
-                                style: const TextStyle(
-                                    fontSize: 15, color: Colors.blue))
-                          ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
-                          Row(children: [
-                            Text("Accuracy:   ", style: const TextStyle(fontSize: 20)),
-                            Text("6/7",
-                                style: const TextStyle(
-                                    fontSize: 15, color: Colors.blue))
-                          ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
-                          Row(children: [
-                            Text("Pass:   ", style: const TextStyle(fontSize: 20)),
-                            Text("7/10",
-                                style: const TextStyle(
-                                    fontSize: 15, color: Colors.blue))
-                          ], mainAxisAlignment: MainAxisAlignment.spaceBetween),
+                                Column(children: [Image.network('http://185.146.3.41/VFC-backend/$photoPath', width: 140,),
+                                  Text(_controllerPlayerLastName.value.text,
+                                    style: const TextStyle(
+                                        color: Color.fromARGB(255, 0, 0, 0),
+                                        fontSize: 50,
+                                        fontFamily: 'VisaDialectHigh')),])
+
+                              ])),
+
+                          const Divider(
+                              color: Color.fromARGB(255, 0, 0, 245), height: 20, thickness: 2),
+                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
+                            Text("Jump: ", style: TextStyle(fontSize: 30,
+                                fontFamily: 'VisaDialectHigh',
+                                fontWeight: FontWeight.w500)),
+                            Text("0",
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    color: Color.fromARGB(255, 0, 0, 245),
+                                    fontFamily: 'VisaDialectHigh',
+                                    fontWeight: FontWeight.w500))
+                          ]),
+                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
+                            Text("Dribbling:   ", style: TextStyle(fontSize: 30,
+                                fontFamily: 'VisaDialectHigh',
+                                fontWeight: FontWeight.w500)),
+                            Text("00:00",
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    color: Color.fromARGB(255, 0, 0, 245),
+                                    fontFamily: 'VisaDialectHigh',
+                                    fontWeight: FontWeight.w500))
+                          ]),
+                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
+                            Text("Accuracy:   ", style: TextStyle(fontSize: 30,
+                                fontFamily: 'VisaDialectHigh',
+                                fontWeight: FontWeight.w500)),
+                            Text("0/7",
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    color: Color.fromARGB(255, 0, 0, 245),
+                                    fontFamily: 'VisaDialectHigh',
+                                    fontWeight: FontWeight.w500))
+                          ]),
+                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
+                            Text("Pass:   ", style: TextStyle(fontSize: 30,
+                                fontFamily: 'VisaDialectHigh',
+                                fontWeight: FontWeight.w500)),
+                            Text("0/10",
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    color: Color.fromARGB(255, 0, 0, 245),
+                                    fontFamily: 'VisaDialectHigh',
+                                    fontWeight: FontWeight.w500))
+                          ]),
                         ],
                       )
 
 
                       )),
-                      Text(
-                      "Ваш ID: ${playerID}",
+                     Padding(padding: EdgeInsets.only(top: 20), child:
+                     Text(
+                      "ID: 0${playerID}",
                       style: const TextStyle(
                           color: Colors.white,
                           decoration: TextDecoration.none,
-                          fontSize: 50),
-                    )]);
+                          fontSize: 60),
+                    )),
+                Text(
+                  TAKE_ID_TO_OPERATOR[_lang]!,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      decoration: TextDecoration.none,
+                      fontSize: 20),
+                ),
+                Padding(padding:  EdgeInsets.all(30), child:
+                ElevatedButton(onPressed: () {
+                  setState(() {
+                    _stashState(); _stage = 0;
+                  });
+                  }, style: ElevatedButton.styleFrom(fixedSize:  const Size(300, 60)),
+                    child: Text("OK", style: TextStyle(fontSize: 35),)))
+              ]);
             }
           },
         ),
