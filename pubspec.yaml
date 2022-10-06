@@ -40,6 +40,10 @@ dependencies:
   http: ^0.13.5
   intl_phone_field: ^3.1.0
   timer_count_down: ^2.2.1
+  flutter_countdown_timer: ^4.1.0
+  extended_phone_number_input: ^1.0.2
+  phone_form_field: ^4.6.0
+  intl_phone_number_input: ^0.7.1
 
 dev_dependencies:
   flutter_test:
